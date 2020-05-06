@@ -45,3 +45,6 @@ function RenderDish(props) {
      
 
 export default Dishdetail;
+
+
+
