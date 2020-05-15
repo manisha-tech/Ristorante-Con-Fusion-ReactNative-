@@ -39,11 +39,12 @@ class AboutUs extends Component {
           };
         
     }
-    static navigationOptions = {
-       title: 'About Us'
-   };
+     static navigationOptions = {
+      title: 'About Us'
+    };
 
    render() {
+    const {navigate} = this.props.navigation;
        return(
            <ScrollView>
                <History />
