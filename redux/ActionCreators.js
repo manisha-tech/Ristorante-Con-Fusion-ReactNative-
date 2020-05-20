@@ -31,10 +31,14 @@ export const addComments = (comments) => ({
     payload: comments
 });
 
+
+
+
+
+
 export const fetchDishes = () => (dispatch) => {
 
     dispatch(dishesLoading());
-
     return fetch(baseUrl + 'dishes')
     .then(response => {
         if (response.ok) {
@@ -68,11 +72,13 @@ export const addDishes = (dishes) => ({
     payload: dishes
 });
 
+
+
+
+
 export const fetchPromos = () => (dispatch) => {
     
-
     dispatch(promosLoading());
-
     return fetch(baseUrl + 'promotions')
     .then(response => {
         if (response.ok) {
@@ -96,7 +102,6 @@ export const promosLoading = () => ({
     type: ActionTypes.PROMOS_LOADING
 });
 
-
 export const promosFailed = (errmess) => ({
     type: ActionTypes.PROMOS_FAILED,
     payload: errmess
@@ -107,12 +112,13 @@ export const addPromos = (promos) => ({
     payload: promos
 });
 
+
+
+
 export const fetchLeaders = () => (dispatch) => {
     
     dispatch(leadersLoading());
-
-    return fet
-ch(baseUrl + 'leaders')
+    return fetch(baseUrl + 'leaders')
     .then(response => {
         if (response.ok) {
             return response;
@@ -130,7 +136,6 @@ ch(baseUrl + 'leaders')
     .then(leaders => dispatch(addLeaders(leaders)))
     .catch(error => dispatch(leadersFailed(error.message)));
 };
-
 
 export const leadersLoading = () => ({
     type: ActionTypes.LEADERS_LOADING
