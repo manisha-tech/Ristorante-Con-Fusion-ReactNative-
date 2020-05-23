@@ -105,9 +105,8 @@ function RenderComments(props) {
         );
     }
 }
-     
+ 
+
+
 
 export default connect(mapStateToProps)(Dishdetail);
-
-
-
