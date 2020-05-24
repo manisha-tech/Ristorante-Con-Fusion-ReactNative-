@@ -5,16 +5,21 @@ import { Card, Icon } from 'react-native-elements';
 // import { COMMENTS } from '../shared/comments';
 import {connect} from 'react-redux';
 import {baseUrl} from '../shared/baseUrl';
-
+import { postFavorite } from '../redux/ActionCreators';
 
 
 
 const mapStateToProps = state => {
     return {
-        dishes: state.dishes,
-        comments: state.comments
+      dishes: state.dishes,
+      comments: state.comments,
+      favorites: state.favorites
     }
-}
+  }
+
+const mapDispatchToProps = dispatch => ({
+    postFavorite: (dishId) => dispatch(postFavorite(dishId))
+});
 
 
 function RenderDish(props) {
@@ -76,18 +81,18 @@ function RenderComments(props) {
 }
 
  class Dishdetail extends Component {
-     constructor(props) {
-         super(props);
+    //  constructor(props) {
+    //      super(props);
 
-         this.state={
-            //  dishes: DISHES,
-            //  comments: COMMENTS,
-             favourites :[]
-         };
-     }
+    //      this.state={
+    //         //  dishes: DISHES,
+    //         //  comments: COMMENTS,
+    //          favourites :[]
+    //      };
+    //  }
 
      markFavourite(dishId) {
-         this.setState({favourites: this.state.favourites.concat(dishId)})
+         this.props.postFavorite(dishId);
      }
      static navigationOptions = {
         title: 'Dish Details'
@@ -98,8 +103,8 @@ function RenderComments(props) {
         return(
             <ScrollView>
             <RenderDish dish={this.props.dishes.dishes[+dishId]} 
-            favourite={this.state.favourites.some(el => el === dishId)}
-            onPress={() => this.markFavourite(dishId)}/>
+                    favorite={this.props.favorites.some(el => el === dishId)}
+                    onPress={() => this.markFavourite(dishId)}/>
             <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
             </ScrollView>
         );
@@ -109,4 +114,4 @@ function RenderComments(props) {
 
 
 
-export default connect(mapStateToProps)(Dishdetail);
+export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);
