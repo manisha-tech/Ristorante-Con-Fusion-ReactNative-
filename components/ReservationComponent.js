@@ -34,6 +34,8 @@ class Reservation extends Component {
 //             showModal: false
 //         });
 //     }
+
+
 toggleModal() {
     this.setState({showModal: !this.state.showModal});
 }
@@ -169,7 +171,6 @@ const styles = StyleSheet.create({
          fontSize: 18,
          margin: 10
      }
-
 });
 
 export default Reservation;
