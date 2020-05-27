@@ -1,15 +1,18 @@
 import React,{Component} from "react";
  import { Card } from 'react-native-elements';
- import { Text, View, scrollView } from "react-native";
+ import { Text, scrollView } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import * as Animatable from 'react-native-animatable';
+
 
   class Contact extends Component{
-          constructor(props) {
-          super(props);
+    //       constructor(props) {
+    //       super(props);
 
-         this.state={ 
+    //      this.state={ 
 
-         };
-      }
+    //      };
+    //   }
 
     //   static navigationOptions = {
     //       title: "Contact Us",
@@ -17,18 +20,18 @@ import React,{Component} from "react";
 
       render(){
          return(
-             <Card title="Contact Information">
-            <View>
-                <Text>
-                <Text>121, Clear Water Bay Road</Text>{"\n"}
-                <Text>Clear Water Bay, Kowloon</Text>{"\n"}
-                 <Text>HONG KONG</Text>{"\n"}
-                <Text>el: +852 1234 5678</Text>{"\n"}
-                <Text>Fax: +852 8765 4321</Text>{"\n"}
-                <Text>Email:confusion@food.net</Text>
-                </Text>
-            </View>
-            </Card>
+             <ScrollView>
+                  <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+                 <Card title="Contact Information">
+                 <Text style ={{margin:10}}>121, Clear Water Bay Road</Text>
+                 <Text style ={{margin:10}}>Clear Water Bay, Kowloon</Text>
+                 <Text style ={{margin:10}}>HONG KONG</Text>
+                 <Text style ={{margin:10}}>Tel: +852 1234 5678</Text>
+                 <Text style ={{margin:10}}>Fax: +852 8765 4321</Text>
+                 <Text style ={{margin:10}}>Email:confusion@food.net</Text>
+                 </Card>
+                </Animatable.View>
+            </ScrollView>          
         );
      }
  }
