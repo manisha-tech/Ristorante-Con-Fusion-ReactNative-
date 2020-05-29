@@ -1,6 +1,5 @@
-
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, FlatList, Modal, Button } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, FlatList, Modal, Button, Alert, PanResponder } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 // import {DISHES}  from '../shared/dishes';
 // import { COMMENTS } from '../shared/comments';
@@ -8,8 +7,6 @@ import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postComment, postFavorite } from '../redux/ActionCreators';
 import * as Animatable from 'react-native-animatable';
-
-
 
 
 const mapStateToProps = state => {
@@ -25,10 +22,44 @@ const mapDispatchToProps = dispatch => ({
     postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
 });
 
-function RenderDish({ dish, favorite,markFavorite, openCommentForm,}) {
+
+
+function RenderDish ({ dish, favorite,markFavorite, openCommentForm,}) {
+
+
+    const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+        if ( dx < -200 )
+            return true;
+        else
+            return false;
+    }
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: (e, gestureState) => {
+            return true;
+        },
+        onPanResponderEnd: (e, gestureState) => {
+            console.log("pan responder end", gestureState);
+            if (recognizeDrag(gestureState))
+                Alert.alert(
+                    'Add Favorite',
+                    'Are you sure you wish to add ' + dish.name + ' to favorite?',
+                    [
+                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                    {text: 'OK', onPress: () => {props.favorite ? console.log('Already favorite') : props.onPress()}},
+                    ],
+                    { cancelable: false }
+                );
+
+            return true;
+        }
+    })
+    
+
     if (dish != null) {
         return(
-            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+            {...panResponder.panHandlers} >
             <Card
                 featuredTitle={dish.name}
                 image={ {uri: baseUrl + dish.image}}
