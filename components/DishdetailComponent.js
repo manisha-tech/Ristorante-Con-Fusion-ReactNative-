@@ -35,8 +35,17 @@ function RenderDish ({ dish, favorite,markFavorite, openCommentForm,}) {
             return false;
     }
 
-    const panResponder = PanResponder.create({
 
+    const recognizeComment = ({moveX, moveY, dx, dy}) =>
+    {
+        if ( dx > 200 )
+            return true;
+        else
+            return false;
+
+    }
+
+    const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: (e, gestureState) => {
             return true;
         },
@@ -48,9 +57,9 @@ function RenderDish ({ dish, favorite,markFavorite, openCommentForm,}) {
         },
 
 
-        onPanResponderEnd: (e, gestureState) => {
+    onPanResponderEnd: (e, gestureState) => {
             console.log("pan responder end", gestureState);
-            if (recognizeDrag(gestureState))
+            if (recognizeDrag(gestureState)){
                 Alert.alert(
                     'Add Favorite',
                     'Are you sure you wish to add ' + dish.name + ' to favorite?',
@@ -60,10 +69,12 @@ function RenderDish ({ dish, favorite,markFavorite, openCommentForm,}) {
                     ],
                     { cancelable: false }
                 );
-
-            return true;
+        } else if (recognizeComment(gestureState)) {
+            openCommentForm();
         }
-    })
+            return true;
+        },
+    });
     
 
     if (dish != null) {
@@ -71,6 +82,7 @@ function RenderDish ({ dish, favorite,markFavorite, openCommentForm,}) {
             <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
             ref={this.handleViewRef}
             {...panResponder.panHandlers} >
+                
             <Card
                 featuredTitle={dish.name}
                 image={ {uri: baseUrl + dish.image}}
@@ -287,3 +299,4 @@ const styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);
+

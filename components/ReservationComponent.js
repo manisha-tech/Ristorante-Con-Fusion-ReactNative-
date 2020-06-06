@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Alert } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-
+import * as Animatable from 'react-native-animatable';
+import {  Notifications } from 'expo';
+// import { Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 class Reservation extends Component {
 
@@ -13,36 +16,34 @@ class Reservation extends Component {
             guests: 1,
             smoking: false,
             date: '',
-            showModal: false
+            // showModal: false
         }
     }
 
-//     static navigationOptions = {
-//         title: 'Reserve Table',
-//     };
+    static navigationOptions = {
+        title: 'Reserve Table',
+    };
+
+
+    handleReservation() {
+        console.log(JSON.stringify(this.state));
+        this.setState({
+            guests: 1,
+            smoking: false,
+            date: '',
+            // showModal: false
+        });
+    }
 
 // toggleModal(){
 //     this.setState({showModal: !this.state.showModal});
 
 // }
-//     handleReservation() {
-//         console.log(JSON.stringify(this.state));
-//         this.setState({
-//             guests: 1,
-//             smoking: false,
-//             date: '',
-//             showModal: false
-//         });
-//     }
 
-
-toggleModal() {
-    this.setState({showModal: !this.state.showModal});
-}
 
 handleReservation() {
     console.log(JSON.stringify(this.state));
-    this.toggleModal();
+    // this.toggleModal();
 }
 
 resetForm() {
@@ -50,13 +51,49 @@ resetForm() {
         guests: 1,
         smoking: false,
         date: '',
-        showModal: false
+        // showModal: false
     });
 }
-    
+
+
+async obtainNotificationPermission() {
+    let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+    if (permission.status !== 'granted') {
+        permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            Alert.alert('Permission not granted to show notifications');
+        }
+    }
+    return permission;
+}
+
+async presentLocalNotification(date) {
+    await this.obtainNotificationPermission();
+    Notifications.presentLocalNotificationAsync({
+        title: 'Your Reservation',
+        body: 'Reservation for '+ date + ' requested',
+        ios: {
+            sound: true,
+            _displayInForeground: true
+        },
+        android: {
+            sound: true,
+            vibrate: true,
+            color: '#512DA8'
+        }
+    });
+}
+
+
+handleNotification() {
+    console.log('Listener OK');
+}
+
+
     render() {
         return(
             <ScrollView>
+                 <Animatable.View animation="zoomInUp" duration={2000} delay={1000}>
                 <View style={styles.formRow}>
                 <Text style={styles.formLabel}>Number of Guests</Text>
                 <Picker
@@ -101,23 +138,38 @@ resetForm() {
                     dateInput: {
                         marginLeft: 36
                     }
-                    // ... You can check the source to find the other keys. 
                     }}
                     onDateChange={(date) => {this.setState({date: date})}}
                 />
                         </View>
                 <View style={styles.formRow}>
                 <Button
-                    onPress={() => this.handleReservation()}
+                    onPress={() => Alert.alert(
+                        'Your Reservation OK?',
+                        'Number of Guests:'  + this.state.guests + '\n' + 'Smoking?'+ this.state.smoking +'\n'+ 'Date and Time:' + this.state.date + '\n',
+                        [
+                        {text: 'Cancel', onPress: () => { 
+                            Console.log('Reservation Cancelled');
+                            this.resetForm();
+                        }, style: 'cancel'},
+                        {text: 'OK', onPress: () =>  {
+                            this.presentLocalNotification(this.state.date);
+                             this.resetForm();
+                            }
+                            },
+                        ],
+                        { cancelable: false }
+                    )
+                }
                     title="Reserve"
                     color="#512DA8"
                     accessibilityLabel="Learn more about this purple button"
                     />
                 </View>
 
-                <Modal animationType = {"slide"} transparent = {false}
+                {/* <Modal animationType = {"slide"} transparent = {false}
                     visible = {this.state.showModal}
-                    onDismiss = {() => this.toggleModal() }
+                    onDismiss = {() => this.resetForm() }
                     onRequestClose = {() => this.toggleModal() }>
                     <View style = {styles.modal}>
                         <Text style = {styles.modalTitle}>Your Reservation</Text>
@@ -131,8 +183,8 @@ resetForm() {
                             title="Close" 
                             />
                     </View>
-                </Modal>
-
+                </Modal> */}
+                </Animatable.View>
             </ScrollView>
         );
     }
@@ -174,3 +226,5 @@ const styles = StyleSheet.create({
 });
 
 export default Reservation;
+
+
