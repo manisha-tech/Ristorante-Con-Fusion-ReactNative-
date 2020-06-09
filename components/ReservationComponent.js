@@ -184,6 +184,7 @@ handleNotification() {
                             />
                     </View>
                 </Modal> */}
+                
                 </Animatable.View>
             </ScrollView>
         );
