@@ -3,12 +3,10 @@ import { View, StyleSheet, Text, ScrollView, Image } from 'react-native';
 import { Icon, Input, CheckBox, Button } from 'react-native-elements';
 import { createBottomTabNavigator } from 'react-navigation';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { baseUrl } from '../shared/baseUrl';
 import * as Permissions from 'expo-permissions';
 import * as SecureStore from 'expo-secure-store';
-// import { AsyncStorage } from 'react-native';
-// import { ImagePicker } from 'expo-image-picker';
-// import { Camera } from 'expo-camera';
 
 
 class LoginTab extends Component {
@@ -22,6 +20,7 @@ class LoginTab extends Component {
             remember: false
         }
     }
+
 
     componentDidMount() {
         SecureStore.getItemAsync('userinfo')
@@ -149,9 +148,23 @@ class RegisterTab extends Component {
             });
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                this.setState({imageUrl: capturedImage.uri });
+                this.processImage(capturedImage.uri);
             }
         }
+
+    }
+
+
+    processImage = async (imageUri) => {
+        const processedImage = await ImageManipulator.manipulateAsync(
+            imageUri, 
+            [
+                {resize: {width: 400}}
+            ],
+            {format: 'png'}
+        );
+        console.log(processedImage);
+        this.setState({imageUrl: processedImage.uri });
 
     }
     
@@ -252,6 +265,8 @@ class RegisterTab extends Component {
         );
     }
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
